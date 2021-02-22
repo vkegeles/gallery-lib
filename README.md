@@ -15,12 +15,12 @@ npm install --save gallery-lib
 ```jsx
 import React, { Component } from 'react'
 
-import MyComponent from 'gallery-lib'
+import MyGallery from 'gallery-lib'
 import 'gallery-lib/dist/index.css'
 
 class Example extends Component {
   render() {
-    return <MyComponent />
+    return <MyGallery />
   }
 }
 ```
