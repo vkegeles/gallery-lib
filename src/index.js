@@ -28,7 +28,6 @@ export default function MyGallery(props) {
     search,
     pagination,
     sorting,
-    // 'results-per-page': resultsPerPage,
     'auto-rotate-time': autoRotateTime
   } = props;
 
@@ -38,7 +37,6 @@ export default function MyGallery(props) {
   const [images, setImages] = useState(props.feedArray);
   const [pagedImages, setPagedImages] = useState([]);
   const [pageCount, setPageCount] = useState(0);
-
   const [isLoading, setIsLoading] = useState(true);
   const [resultsPerPage, setResultsPerPage] = useState(
     props['results-per-page']
@@ -57,7 +55,7 @@ export default function MyGallery(props) {
   }, []);
 
   useEffect(() => {
-    if (images && pagination) {
+    if (images) {
       const { pageCount, pagedImages } = getPagedData();
       setPagedImages(pagedImages);
       setPageCount(pageCount);
@@ -85,7 +83,9 @@ export default function MyGallery(props) {
     console.log(filtered);
     // const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-    const pagedImages = paginate(filtered, page, resultsPerPage);
+    const pagedImages = pagination
+      ? paginate(filtered, page, resultsPerPage)
+      : filtered;
     const pageCount = Math.ceil(filtered.length / resultsPerPage);
     console.log(pagedImages);
     console.log(pageCount);
@@ -103,8 +103,7 @@ export default function MyGallery(props) {
         />
       )}
       {isLoading && <Loading />}
-      {pagination && pagedImages && <ImageList images={pagedImages} />}
-      {!pagination && images && <ImageList images={images} />}
+      {pagedImages && <ImageList images={pagedImages} />}
 
       {pagination && (
         <Pagination
