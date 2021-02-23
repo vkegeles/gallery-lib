@@ -11,6 +11,9 @@ import { paginate } from './utils/paginate';
 import PageControl from './components/PageControl';
 import _ from 'lodash';
 import SortInput from './components/SortInput';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -22,6 +25,23 @@ const useStyles = makeStyles((theme) => ({
   },
   search: {
     marginBottom: '1em'
+  },
+  paper: {
+    position: 'absolute',
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: '5px'
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  modalImg: {
+    width: 'auto',
+    maxWidth: '80vw',
+    height: '85vh'
   }
 }));
 
@@ -46,6 +66,8 @@ export default function MyGallery(props) {
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState('');
   const [sortDirection, setSortDirection] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [urlModalImage, setUrlModalImage] = useState('');
 
   useEffect(() => {
     if (!images && props.feedPath) {
@@ -110,6 +132,15 @@ export default function MyGallery(props) {
     setPage(1);
   };
 
+  const handleOpen = (image) => {
+    setUrlModalImage(image);
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
   const getPagedData = () => {
     const filtered = searchText
       ? images.filter((image) => image.title.match(new RegExp(searchText, 'i')))
@@ -130,7 +161,12 @@ export default function MyGallery(props) {
     console.log(pagedImages);
     console.log(pageCount);
 
-    return { totalCount: filtered.length, pagedImages, pageCount };
+    return {
+      totalCount: filtered.length,
+      pagedImages,
+      pageCount,
+      sortedImages: sorted
+    };
   };
 
   return (
@@ -150,7 +186,7 @@ export default function MyGallery(props) {
         />
       )}
       {sorting && <SortInput onChange={handleChangeSort} />}
-      {pagedImages && <ImageList images={pagedImages} />}
+      {pagedImages && <ImageList images={pagedImages} onClick={handleOpen} />}
 
       {pagination && (
         <Pagination
@@ -160,8 +196,30 @@ export default function MyGallery(props) {
           page={page}
         />
       )}
-
       {images && images.length === 0 && <h2>No images provided</h2>}
+
+      <Modal
+        aria-labelledby='transition-modal-title'
+        aria-describedby='transition-modal-description'
+        className={classes.modal}
+        open={openModal}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500
+        }}
+      >
+        <Fade in={openModal}>
+          <div className={classes.paper}>
+            <img
+              className={classes.modalImg}
+              src={urlModalImage}
+              alt='big-modal'
+            />
+          </div>
+        </Fade>
+      </Modal>
     </div>
   );
 }
@@ -195,7 +253,7 @@ MyGallery.propTypes = {
 
   search: PropTypes.bool,
   pagination: PropTypes.bool,
-  'results-per-page': PropTypes.number,
+  'results-per-page': PropTypes.oneOf([5, 10, 15, 20]),
   sorting: PropTypes.bool,
   'auto-rotate-time': PropTypes.number
 };

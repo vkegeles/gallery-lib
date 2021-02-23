@@ -4,16 +4,24 @@ import feed from './feed.json';
 import 'gallery-lib/dist/index.css';
 
 const App = () => {
+  // return (
+  //   <MyGallery
+  //     feedPath='data/feed.json'
+  //     search={true}
+  //     results-per-page={10}
+  //     pagination={true}
+  //   />
+  // );
+  // const feed = [];
   return (
     <MyGallery
-      feedPath='data/feed.json'
+      feedArray={feed}
+      results-per-page={15}
+      sorting={true}
       search={true}
-      results-per-page={10}
       pagination={true}
     />
   );
-  // const feed = [];
-  // return <MyGallery feedArray={feed} search={true} results-per-page={10} />;
 };
 
 export default App;

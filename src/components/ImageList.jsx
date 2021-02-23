@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ImageList({ images, width }) {
+function ImageList({ images, width, onClick }) {
   const classes = useStyles();
   const getGridListCols = () => {
     if (isWidthUp('xl', width)) {
@@ -37,7 +37,13 @@ function ImageList({ images, width }) {
     <GridList spacing={15} cellHeight='auto' cols={getGridListCols()}>
       {images.map((tile) => (
         <GridListTile key={tile.url} cols={1} className={classes.tile}>
-          <img src={tile.url} alt={tile.title} />
+          <img
+            src={tile.url}
+            alt={tile.title}
+            onClick={() => {
+              onClick(tile.url);
+            }}
+          />
         </GridListTile>
       ))}
     </GridList>
