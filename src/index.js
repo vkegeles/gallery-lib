@@ -64,6 +64,11 @@ export default function MyGallery(props) {
     }
   }, [images, page, resultsPerPage, searchText]);
 
+  const handleChangeSearch = (newText) => {
+    setSearchText(newText);
+    setPage(1);
+  };
+
   const handlePageChange = (event, value) => {
     setPage(value);
   };
@@ -94,9 +99,7 @@ export default function MyGallery(props) {
         <SearchBar
           value={searchText}
           className={classes.search}
-          onChange={(newText) => {
-            setSearchText(newText);
-          }}
+          onChange={handleChangeSearch}
         />
       )}
       {isLoading && <Loading />}
