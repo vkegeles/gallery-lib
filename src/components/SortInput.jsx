@@ -9,28 +9,29 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function PageControl({ resultsPerPage, onChange }) {
+export default function SortInput({ onChange }) {
   const classes = useStyles();
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel shrink id='images-per-page'>
-        Images per page
+      <InputLabel shrink id='sort-by'>
+        Sort By
       </InputLabel>
       <Select
         native
-        defaultValue={resultsPerPage}
-        labelId='images-per-page'
+        defaultValue={0}
+        labelId='sort-by'
         onChange={onChange}
         inputProps={{
-          name: 'pageSize',
-          id: 'images-per-page'
+          name: 'sortBy',
+          id: 'sort-by'
         }}
       >
-        <option value={5}>5</option>
-        <option value={10}>10</option>
-        <option value={15}>15</option>
-        <option value={20}>20</option>
+        <option value={0}>None</option>
+        <option value={1}>Title ASC</option>
+        <option value={2}>Title DESC</option>
+        <option value={3}>Date ASC</option>
+        <option value={4}>Date DESC</option>
       </Select>
     </FormControl>
   );

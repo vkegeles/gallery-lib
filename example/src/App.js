@@ -9,7 +9,7 @@ const App = () => {
       feedPath='data/feed.json'
       search={true}
       results-per-page={10}
-      pagination={false}
+      pagination={true}
     />
   );
   // const feed = [];

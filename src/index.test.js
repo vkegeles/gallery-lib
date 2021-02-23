@@ -1,7 +1,7 @@
-import { MyGallery } from '.'
+import { MyGallery } from '.';
 
 describe('MyGallery', () => {
   it('is truthy', () => {
-    expect(MyGallery).toBeTruthy()
-  })
-})
+    expect(MyGallery).toBeTruthy();
+  });
+});

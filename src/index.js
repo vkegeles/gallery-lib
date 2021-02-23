@@ -9,6 +9,8 @@ import * as API from './api/api';
 import Loading from './components/Loading';
 import { paginate } from './utils/paginate';
 import PageControl from './components/PageControl';
+import _ from 'lodash';
+import SortInput from './components/SortInput';
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -42,6 +44,8 @@ export default function MyGallery(props) {
     props['results-per-page']
   );
   const [page, setPage] = useState(1);
+  const [sortField, setSortField] = useState('');
+  const [sortDirection, setSortDirection] = useState('');
 
   useEffect(() => {
     if (!images && props.feedPath) {
@@ -60,7 +64,7 @@ export default function MyGallery(props) {
       setPagedImages(pagedImages);
       setPageCount(pageCount);
     }
-  }, [images, page, resultsPerPage, searchText]);
+  }, [images, page, resultsPerPage, searchText, sortField, sortDirection]);
 
   const handleChangeSearch = (newText) => {
     setSearchText(newText);
@@ -75,17 +79,53 @@ export default function MyGallery(props) {
     setPage(1);
   };
 
+  const handleChangeSort = (event) => {
+    let field, direction;
+    switch (event.target.value) {
+      case '1':
+        field = 'title';
+        direction = 'asc';
+        break;
+      case '2':
+        field = 'title';
+        direction = 'desc';
+        break;
+      case '3':
+        field = 'dateparse';
+        direction = 'asc';
+        break;
+      case '4':
+        field = 'dateparse';
+        direction = 'desc';
+        break;
+      default:
+        field = '';
+        direction = '';
+        break;
+    }
+    console.log(field, direction);
+
+    setSortField(field);
+    setSortDirection(direction);
+    setPage(1);
+  };
+
   const getPagedData = () => {
     const filtered = searchText
       ? images.filter((image) => image.title.match(new RegExp(searchText, 'i')))
       : images;
 
-    console.log(filtered);
-    // const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+    const parsed = filtered.map((image) => {
+      image.dateparse = new Date(image.date);
+      return image;
+    });
+
+    const sorted = _.orderBy(parsed, [sortField], [sortDirection]);
+    console.log(sorted);
 
     const pagedImages = pagination
-      ? paginate(filtered, page, resultsPerPage)
-      : filtered;
+      ? paginate(sorted, page, resultsPerPage)
+      : sorted;
     const pageCount = Math.ceil(filtered.length / resultsPerPage);
     console.log(pagedImages);
     console.log(pageCount);
@@ -103,6 +143,13 @@ export default function MyGallery(props) {
         />
       )}
       {isLoading && <Loading />}
+      {pagination && (
+        <PageControl
+          resultsPerPage={resultsPerPage}
+          onChange={handleChangeResultPerPage}
+        />
+      )}
+      {sorting && <SortInput onChange={handleChangeSort} />}
       {pagedImages && <ImageList images={pagedImages} />}
 
       {pagination && (
@@ -113,12 +160,7 @@ export default function MyGallery(props) {
           page={page}
         />
       )}
-      {pagination && (
-        <PageControl
-          resultsPerPage={resultsPerPage}
-          onChange={handleChangeResultPerPage}
-        />
-      )}
+
       {images && images.length === 0 && <h2>No images provided</h2>}
     </div>
   );
