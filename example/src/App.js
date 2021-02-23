@@ -6,11 +6,14 @@ import 'gallery-lib/dist/index.css';
 const App = () => {
   return (
     <MyGallery
-      feed={require('./feed.json')}
-      search='true'
-      results-per-page='15'
+      feedPath='data/feed.json'
+      search={true}
+      results-per-page={10}
+      pagination={true}
     />
   );
+  // const feed = [];
+  // return <MyGallery feedArray={feed} search={true} results-per-page={10} />;
 };
 
 export default App;

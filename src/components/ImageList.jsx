@@ -7,11 +7,15 @@ import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 const useStyles = makeStyles((theme) => ({
   tile: {
     display: 'flex',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    backgroundImage:
+      'url(https://media0.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e476k439zvde2e8323bg9zrvy58p3lgb7ju3ff7cbn9&rid=giphy.gif)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center'
   }
 }));
 
-function ImageList({ feed, width }) {
+function ImageList({ images, width }) {
   const classes = useStyles();
   const getGridListCols = () => {
     if (isWidthUp('xl', width)) {
@@ -31,7 +35,7 @@ function ImageList({ feed, width }) {
 
   return (
     <GridList spacing={15} cellHeight='auto' cols={getGridListCols()}>
-      {feed.map((tile) => (
+      {images.map((tile) => (
         <GridListTile key={tile.url} cols={1} className={classes.tile}>
           <img src={tile.url} alt={tile.title} />
         </GridListTile>
