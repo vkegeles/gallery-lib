@@ -41,7 +41,7 @@ function ImageList({ images, width, onClick }) {
             src={tile.url}
             alt={tile.title}
             onClick={() => {
-              onClick(tile.url);
+              onClick(tile);
             }}
           />
         </GridListTile>

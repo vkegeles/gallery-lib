@@ -14,6 +14,7 @@ import SortInput from './components/SortInput';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Carousel from 'react-material-ui-carousel';
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -39,9 +40,23 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center'
   },
   modalImg: {
-    width: 'auto',
-    maxWidth: '80vw',
-    height: '85vh'
+    display: 'inline-block',
+    backgroundImage:
+      'url(https://media0.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e476k439zvde2e8323bg9zrvy58p3lgb7ju3ff7cbn9&rid=giphy.gif)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    [theme.breakpoints.down('sm')]: {
+      height: 'auto',
+      maxHeight: '85vh',
+      minHeight: '50vh',
+      width: '80vw'
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 'auto',
+      maxWidth: '80vw',
+      minWidth: '50vw',
+      height: '85vh'
+    }
   }
 }));
 
@@ -57,6 +72,7 @@ export default function MyGallery(props) {
 
   const [searchText, setSearchText] = useState('');
   const [images, setImages] = useState(props.feedArray);
+  const [sortedImages, setSortedImages] = useState([]);
   const [pagedImages, setPagedImages] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +83,7 @@ export default function MyGallery(props) {
   const [sortField, setSortField] = useState('');
   const [sortDirection, setSortDirection] = useState('');
   const [openModal, setOpenModal] = useState(false);
-  const [urlModalImage, setUrlModalImage] = useState('');
+  const [indexModalImage, setIndexModalImage] = useState('');
 
   useEffect(() => {
     if (!images && props.feedPath) {
@@ -82,9 +98,10 @@ export default function MyGallery(props) {
 
   useEffect(() => {
     if (images) {
-      const { pageCount, pagedImages } = getPagedData();
-      setPagedImages(pagedImages);
-      setPageCount(pageCount);
+      const res = getPagedData();
+      setPagedImages(res.pagedImages);
+      setSortedImages(res.sortedImages);
+      setPageCount(res.pageCount);
     }
   }, [images, page, resultsPerPage, searchText, sortField, sortDirection]);
 
@@ -133,7 +150,8 @@ export default function MyGallery(props) {
   };
 
   const handleOpen = (image) => {
-    setUrlModalImage(image);
+    const index = sortedImages.indexOf(image);
+    setIndexModalImage(index);
     setOpenModal(true);
   };
 
@@ -212,11 +230,21 @@ export default function MyGallery(props) {
       >
         <Fade in={openModal}>
           <div className={classes.paper}>
-            <img
-              className={classes.modalImg}
-              src={urlModalImage}
-              alt='big-modal'
-            />
+            <Carousel
+              indicators={false}
+              navButtonsAlwaysVisible
+              interval={autoRotateTime * 1000}
+              index={indexModalImage}
+            >
+              {sortedImages.map((item, i) => (
+                <img
+                  key={images}
+                  className={classes.modalImg}
+                  src={item.url}
+                  alt={item.title}
+                />
+              ))}
+            </Carousel>
           </div>
         </Fade>
       </Modal>
