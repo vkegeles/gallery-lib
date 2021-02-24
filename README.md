@@ -19,7 +19,7 @@ image format: {
 "date": "Thu, 12 Jul 2012 03:27:00 -0400"
 },
 
-feedPath(type:String) - path to json file inside public folder
+feedPath(type:String) - path to json file of array of images(format is the same) inside public folder
 
 If there is both parameters feedArray and feedPath, library will use feedArray source
 
