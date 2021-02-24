@@ -17,9 +17,6 @@ import SlideShow from './components/SlideShow';
 
 const useStyles = makeStyles((theme) => ({
   test: {
-    margin: '2em',
-    padding: '0.5em',
-    border: '2px solid #000',
     fontSize: '2em',
     textAlign: 'center'
   },
