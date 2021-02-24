@@ -8,13 +8,13 @@ import PropTypes from 'prop-types';
 import * as API from './api/api';
 import Loading from './components/Loading';
 import { paginate } from './utils/paginate';
-import PageControl from './components/PageControl';
+import SelectControl from './components/SelectControl';
 import _ from 'lodash';
-import SortInput from './components/SortInput';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Carousel from 'react-material-ui-carousel';
+import { sortSelect, pageSizeSelect } from './utils/selectLists';
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
       'url(https://media0.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e476k439zvde2e8323bg9zrvy58p3lgb7ju3ff7cbn9&rid=giphy.gif)',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
+    backgroundSize: '100px 100px',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
       maxHeight: '85vh',
@@ -119,33 +120,11 @@ export default function MyGallery(props) {
   };
 
   const handleChangeSort = (event) => {
-    let field, direction;
-    switch (event.target.value) {
-      case '1':
-        field = 'title';
-        direction = 'asc';
-        break;
-      case '2':
-        field = 'title';
-        direction = 'desc';
-        break;
-      case '3':
-        field = 'dateparse';
-        direction = 'asc';
-        break;
-      case '4':
-        field = 'dateparse';
-        direction = 'desc';
-        break;
-      default:
-        field = '';
-        direction = '';
-        break;
-    }
-    console.log(field, direction);
-
-    setSortField(field);
-    setSortDirection(direction);
+    const selectedSort = sortSelect.find((item) => {
+      return item.value === event.target.value;
+    });
+    setSortField(selectedSort.field);
+    setSortDirection(selectedSort.direction);
     setPage(1);
   };
 
@@ -198,12 +177,25 @@ export default function MyGallery(props) {
       )}
       {isLoading && <Loading />}
       {pagination && (
-        <PageControl
-          resultsPerPage={resultsPerPage}
+        <SelectControl
+          defaultValue={resultsPerPage}
           onChange={handleChangeResultPerPage}
+          id='images-per-page'
+          options={pageSizeSelect}
+          nameProps='pageSize'
+          label='Images per page'
         />
       )}
-      {sorting && <SortInput onChange={handleChangeSort} />}
+      {sorting && (
+        <SelectControl
+          defaultValue={sortSelect[0].value}
+          onChange={handleChangeSort}
+          id='sort-by'
+          options={sortSelect}
+          nameProps='sortBy'
+          label='Sort By'
+        />
+      )}
       {pagedImages && <ImageList images={pagedImages} onClick={handleOpen} />}
 
       {pagination && (
@@ -242,6 +234,10 @@ export default function MyGallery(props) {
                   className={classes.modalImg}
                   src={item.url}
                   alt={item.title}
+                  onError={(e) => {
+                    e.target.style =
+                      'background-image: url(https://img.icons8.com/ios/452/no-image.png);';
+                  }}
                 />
               ))}
             </Carousel>

@@ -9,28 +9,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function PageControl({ resultsPerPage, onChange }) {
+export default function SelectControl({
+  defaultValue,
+  onChange,
+  id,
+  options,
+  nameProps,
+  label
+}) {
   const classes = useStyles();
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel shrink id='images-per-page'>
-        Images per page
+      <InputLabel shrink id={id}>
+        {label}
       </InputLabel>
       <Select
         native
-        defaultValue={resultsPerPage}
-        labelId='images-per-page'
+        defaultValue={defaultValue}
+        labelId={id}
         onChange={onChange}
         inputProps={{
-          name: 'pageSize',
-          id: 'images-per-page'
+          name: nameProps,
+          id
         }}
       >
-        <option value={5}>5</option>
-        <option value={10}>10</option>
-        <option value={15}>15</option>
-        <option value={20}>20</option>
+        {options.map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.name}
+          </option>
+        ))}
       </Select>
     </FormControl>
   );

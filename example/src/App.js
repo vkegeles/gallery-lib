@@ -17,9 +17,9 @@ const App = () => {
     <MyGallery
       feedArray={feed}
       results-per-page={15}
-      sorting={false}
+      sorting={true}
       search={true}
-      pagination={false}
+      pagination={true}
       auto-rotate-time={3}
     />
   );
