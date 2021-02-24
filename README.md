@@ -7,6 +7,7 @@
 ## Install
 
 ```bash
+npm i -s git+https://github.com/vkegeles/gallery-lib.git
 npm install --save gallery-lib
 ```
 
