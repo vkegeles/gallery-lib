@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Pagination } from '@material-ui/lab';
-
 import SearchBar from 'material-ui-search-bar';
 import ImageList from './components/ImageList';
 import PropTypes from 'prop-types';
@@ -13,8 +12,8 @@ import _ from 'lodash';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import Carousel from 'react-material-ui-carousel';
 import { sortSelect, pageSizeSelect } from './utils/selectLists';
+import SlideShow from './components/SlideShow';
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -38,26 +37,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  modalImg: {
-    display: 'inline-block',
-    backgroundImage:
-      'url(https://media0.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e476k439zvde2e8323bg9zrvy58p3lgb7ju3ff7cbn9&rid=giphy.gif)',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-    backgroundSize: '100px 100px',
-    [theme.breakpoints.down('sm')]: {
-      height: 'auto',
-      maxHeight: '85vh',
-      minHeight: '50vh',
-      width: '80vw'
-    },
-    [theme.breakpoints.up('md')]: {
-      width: 'auto',
-      maxWidth: '80vw',
-      minWidth: '50vw',
-      height: '85vh'
-    }
   }
 }));
 
@@ -128,13 +107,13 @@ export default function MyGallery(props) {
     setPage(1);
   };
 
-  const handleOpen = (image) => {
+  const handleModalOpen = (image) => {
     const index = sortedImages.indexOf(image);
     setIndexModalImage(index);
     setOpenModal(true);
   };
 
-  const handleClose = () => {
+  const handleModalClose = () => {
     setOpenModal(false);
   };
 
@@ -196,7 +175,9 @@ export default function MyGallery(props) {
           label='Sort By'
         />
       )}
-      {pagedImages && <ImageList images={pagedImages} onClick={handleOpen} />}
+      {pagedImages && (
+        <ImageList images={pagedImages} onClick={handleModalOpen} />
+      )}
 
       {pagination && (
         <Pagination
@@ -213,7 +194,7 @@ export default function MyGallery(props) {
         aria-describedby='transition-modal-description'
         className={classes.modal}
         open={openModal}
-        onClose={handleClose}
+        onClose={handleModalClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -222,25 +203,11 @@ export default function MyGallery(props) {
       >
         <Fade in={openModal}>
           <div className={classes.paper}>
-            <Carousel
-              indicators={false}
-              navButtonsAlwaysVisible
-              interval={autoRotateTime * 1000}
-              index={indexModalImage}
-            >
-              {sortedImages.map((item, i) => (
-                <img
-                  key={images}
-                  className={classes.modalImg}
-                  src={item.url}
-                  alt={item.title}
-                  onError={(e) => {
-                    e.target.style =
-                      'background-image: url(https://img.icons8.com/ios/452/no-image.png);';
-                  }}
-                />
-              ))}
-            </Carousel>
+            <SlideShow
+              autoRotateTimeMs={autoRotateTime * 1000}
+              curIndex={indexModalImage}
+              images={sortedImages}
+            />
           </div>
         </Fade>
       </Modal>
