@@ -128,14 +128,11 @@ export default function MyGallery(props) {
     });
 
     const sorted = _.orderBy(parsed, [sortField], [sortDirection]);
-    console.log(sorted);
 
     const pagedImages = pagination
       ? paginate(sorted, page, resultsPerPage)
       : sorted;
     const pageCount = Math.ceil(filtered.length / resultsPerPage);
-    console.log(pagedImages);
-    console.log(pageCount);
 
     return {
       totalCount: filtered.length,

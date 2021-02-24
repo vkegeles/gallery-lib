@@ -6,7 +6,6 @@ export async function fetchData(path, cb) {
     }
   })
     .then((response) => {
-      console.log(response);
       return response.json();
     })
     .then((myJson) => {
